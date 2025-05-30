@@ -62,7 +62,7 @@ class SpenderBot{
     }
 
     public function getOwner(){
-        return $this->owner;
+        return $this->owner->getAccountId();
     }
 
 	public function createPayment($paymentData)
@@ -234,7 +234,7 @@ class SpenderBot{
         if ($pid == 0) {
             // Subscribe to listen for payments for owner account.
             // If we set the cursor to "now" it will not receive old events such as the create account operation.
-            $this->sdk->payments()->forAccount($owner->getAccountId())->cursor("now")->stream(function(OperationResponse $payment) {
+            $this->sdk->payments()->forAccount($owner)->cursor("now")->stream(function(OperationResponse $payment) {
                 $this->logComment(printf('Payment operation %s id %s' . PHP_EOL, get_class($payment), $payment->getOperationId()));
                 // exit as soon as our specific payment has been received
                 if ($payment instanceof PaymentOperationResponse && floatval($payment->getAmount()) >= $minAmount) {
@@ -272,7 +272,7 @@ class SpenderBot{
 
         $response = $this->sdk->submitTransaction($transaction);
         if ($response->isSuccessful()) {
-            $this->logComment(printf(PHP_EOL."%s Sent %s to %s", $this->owner,$amount,$this->destination));
+            $this->logComment(printf(PHP_EOL."%s Sent %s to %s", $this->getOwner(),$amount,$this->destination));
             return $response->getHash();
         }
         return null;
@@ -285,7 +285,7 @@ class SpenderBot{
     // get claimable balance
     public function getClaimable()
     {
-        $requestBuilder = $this->sdk->claimableBalances()->forClaimant($this->owner);
+        $requestBuilder = $this->sdk->claimableBalances()->forClaimant($this->getOwner());
         $response = $requestBuilder->execute();
         $items = $response->getClaimableBalances()->count();
 
@@ -300,7 +300,7 @@ class SpenderBot{
     public function spendClaimable(){
         $cb = $this->getClaimable();
         if (!is_null($cb)) {
-            $spender = $this->sdk->requestAccount($this->owner);
+            $spender = $this->sdk->requestAccount($this->getOwner());
             $feeCharged = floatval($this->getFeeRate());
             $spendAmount = floatval($cb->getAmount()-$feeCharged);
             $claim = (new ClaimClaimableBalanceOperationBuilder($cb->getBalanceId()))->build();
