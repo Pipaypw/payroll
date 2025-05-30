@@ -4,7 +4,7 @@
 </p>
 
 
-# Pi Network - PHP server-side Service worker package
+# Payroll -  Pi Network PHP server-side Service worker package
 
 This is a Pi Network PHP package you can use to integrate the Pi Network sevice worker apps platform with a PHP backend application.
 
