@@ -1,0 +1,22 @@
+{
+    "name": "pipaypw/payroll",
+    "description": "PHP package to automate operation  transactions on Pi Network",
+    "version": "1.0.1",
+    "require": {
+        "guzzlehttp/guzzle": "^7.9",
+        "soneso/stellar-php-sdk": "^1.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Pipaypw\\Payroll\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "pipay.pw team",
+            "email": "support@pipay.pw"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
